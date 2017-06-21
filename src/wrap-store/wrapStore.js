@@ -1,3 +1,5 @@
+import ext from '../utils/ext';
+
 import {
   DISPATCH_TYPE,
   STATE_TYPE
@@ -95,13 +97,13 @@ export default (store, {
   /**
    * Setup action handler
    */
-  chrome.runtime.onMessage.addListener(dispatchResponse);
+  ext.runtime.onMessage.addListener(dispatchResponse);
 
   /**
    * Setup external action handler
    */
-  if (chrome.runtime.onMessageExternal) {
-    chrome.runtime.onMessageExternal.addListener(dispatchResponse);
+  if (ext.runtime.onMessageExternal) {
+    ext.runtime.onMessageExternal.addListener(dispatchResponse);
   } else {
     console.warn('runtime.onMessageExternal is not supported');
   }
@@ -109,13 +111,13 @@ export default (store, {
   /**
    * Setup extended connection
    */
-  chrome.runtime.onConnect.addListener(connectState);
+  ext.runtime.onConnect.addListener(connectState);
 
   /**
    * Setup extended external connection
    */
-  if (chrome.runtime.onConnectExternal) {
-    chrome.runtime.onConnectExternal.addListener(connectState);
+  if (ext.runtime.onConnectExternal) {
+    ext.runtime.onConnectExternal.addListener(connectState);
   } else {
     console.warn('runtime.onConnectExternal is not supported');
   }

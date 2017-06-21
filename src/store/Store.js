@@ -1,5 +1,7 @@
 import assignIn from 'lodash/assignIn';
 
+import ext from '../utils/ext';
+
 import {
   DISPATCH_TYPE,
   STATE_TYPE
@@ -23,7 +25,7 @@ class Store {
     this.readyPromise = new Promise(resolve => this.readyResolve = resolve);
 
     this.extensionId = extensionId; // keep the extensionId as an instance variable
-    this.port = chrome.runtime.connect(this.extensionId, {name: portName});
+    this.port = ext.runtime.connect(this.extensionId, {name: portName});
     this.listeners = [];
     this.state = state;
 
@@ -92,7 +94,7 @@ class Store {
    */
   dispatch(data) {
     return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage(
+      ext.runtime.sendMessage(
         this.extensionId,
         {
           type: DISPATCH_TYPE,

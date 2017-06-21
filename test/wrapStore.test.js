@@ -2,6 +2,7 @@ import 'babel-polyfill';
 
 import sinon from 'sinon';
 
+import ext from '../src/utils/ext';
 import {wrapStore} from '../src';
 import {DISPATCH_TYPE} from '../src/constants';
 
@@ -9,21 +10,19 @@ describe('wrapStore', function () {
   const portName = 'test';
 
   beforeEach(function () {
-    // Mock chrome.runtime API
-    global.chrome = {
-      runtime: {
-        onMessage: {
-          addListener: () => {},
-        },
-        onMessageExternal: {
-          addListener: () => {},
-        },
-        onConnect: {
-          addListener: () => {},
-        },
-        onConnectExternal: {
-          addListener: () => {},
-        },
+    // Mock ext.runtime API
+    ext.runtime = {
+      onMessage: {
+        addListener: () => {},
+      },
+      onMessageExternal: {
+        addListener: () => {},
+      },
+      onConnect: {
+        addListener: () => {},
+      },
+      onConnectExternal: {
+        addListener: () => {},
       },
     };
   });
@@ -36,20 +35,18 @@ describe('wrapStore', function () {
       onConnectExternal: [],
     };
 
-    global.chrome = {
-      runtime: {
-        onMessage: {
-          addListener: fn => listeners.onMessage.push(fn),
-        },
-        onMessageExternal: {
-          addListener: fn => listeners.onMessageExternal.push(fn),
-        },
-        onConnect: {
-          addListener: fn => listeners.onConnect.push(fn),
-        },
-        onConnectExternal: {
-          addListener: fn => listeners.onConnectExternal.push(fn),
-        },
+    ext.runtime = {
+      onMessage: {
+        addListener: fn => listeners.onMessage.push(fn),
+      },
+      onMessageExternal: {
+        addListener: fn => listeners.onMessageExternal.push(fn),
+      },
+      onConnect: {
+        addListener: fn => listeners.onConnect.push(fn),
+      },
+      onConnectExternal: {
+        addListener: fn => listeners.onConnectExternal.push(fn),
       },
     };
 

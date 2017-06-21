@@ -3,6 +3,7 @@ import 'babel-polyfill';
 import should from 'should';
 import sinon from 'sinon';
 
+import ext from '../src/utils/ext';
 import { Store } from '../src';
 import { DISPATCH_TYPE, STATE_TYPE } from '../src/constants';
 
@@ -10,20 +11,18 @@ describe('Store', function () {
   const portName = 'test';
 
   beforeEach(function () {
-    // Mock chrome.runtime API
-    global.chrome = {
-      runtime: {
-        connect() {
-          return {
-            onMessage: {
-              addListener() {
-              }
+    // Mock ext.runtime API
+    ext.runtime = {
+      connect() {
+        return {
+          onMessage: {
+            addListener() {
             }
-          };
-        },
-        sendMessage(data, cb) {
-          cb();
-        }
+          }
+        };
+      },
+      sendMessage(data, cb) {
+        cb();
       }
     };
   });
@@ -34,7 +33,7 @@ describe('Store', function () {
       const listeners = [];
 
       // override mock chrome API for this test
-      global.chrome.runtime.connect = () => {
+      ext.runtime.connect = () => {
         return {
           onMessage: {
             addListener: listener => {
@@ -92,7 +91,7 @@ describe('Store', function () {
       const listeners = [];
 
       // override mock chrome API for this test
-      global.chrome.runtime.connect = () => {
+      ext.runtime.connect = () => {
         return {
           onMessage: {
             addListener(listener) {
@@ -208,7 +207,7 @@ describe('Store', function () {
 
   describe('#dispatch()', function () {
     it('should send a message with the correct dispatch type and payload given an extensionId', function () {
-      const spy = global.chrome.runtime.sendMessage = sinon.spy(),
+      const spy = ext.runtime.sendMessage = sinon.spy(),
             store = new Store({portName, extensionId: 'xxxxxxxxxxxx'});
 
       store.dispatch({a: 'a'});
@@ -222,7 +221,7 @@ describe('Store', function () {
     });
 
     it('should send a message with the correct dispatch type and payload not given an extensionId', function () {
-      const spy = global.chrome.runtime.sendMessage = sinon.spy(),
+      const spy = ext.runtime.sendMessage = sinon.spy(),
             store = new Store({portName});
 
       store.dispatch({a: 'a'});
@@ -236,7 +235,7 @@ describe('Store', function () {
     });
 
     it('should return a promise that resolves with successful action', function () {
-      global.chrome.runtime.sendMessage = (extensionId, data, cb) => {
+      ext.runtime.sendMessage = (extensionId, data, cb) => {
         cb({value: {payload: 'hello'}});
       };
 
@@ -247,7 +246,7 @@ describe('Store', function () {
     });
 
     it('should return a promise that rejects with an action error', function () {
-      global.chrome.runtime.sendMessage = (extensionId, data, cb) => {
+      ext.runtime.sendMessage = (extensionId, data, cb) => {
         cb({value: {payload: 'hello'}, error: {extraMsg: 'test'}});
       };
 
@@ -264,7 +263,7 @@ describe('Store', function () {
     });
 
     it('should return a promise that resolves with undefined for an undefined return value', function () {
-      global.chrome.runtime.sendMessage = (extensionId, data, cb) => {
+      ext.runtime.sendMessage = (extensionId, data, cb) => {
         cb({value: undefined});
       };
 
